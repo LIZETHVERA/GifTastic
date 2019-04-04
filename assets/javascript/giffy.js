@@ -8,11 +8,11 @@ var sports = ["Wingsuit flying", "Field archery", "Gymnastics", "Hang gliding","
 
 function displaySports() {
 
-    var sport = $(this).attr("data-name");
-    var queryUrl = "http://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=oiM2ClHg2Eep6z2Pbfi8uR4kkEsv5zeO&limit=10";
-  
-    // Creating an AJAX call for the specific sport button being clicked.
+var offset = Math.floor((Math.random() * 100) + 1);    
+var sport = $(this).attr("data-name");
+var queryUrl = "http://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=oiM2ClHg2Eep6z2Pbfi8uR4kkEsv5zeO&limit=10&offset=" + offset;
 
+// Creating an AJAX call for the specific sport button being clicked.
     $.ajax ({
         url: queryUrl,
         method: "GET"
@@ -24,7 +24,7 @@ function displaySports() {
         for (var i = 0; i < response.data.length; i++) {
 
             // Creating a div to hold the sport
-            var sportDiv = $("<div class='sport'>");
+            var sportDiv = $("<div class='sport'>").text();
             // Store the rating data
             var rating = response.data[i].rating;
             // Element to have the rating displayed
@@ -39,15 +39,30 @@ function displaySports() {
             var image = $("<img>").attr("src", imgURL).attr("data-still",imgURLStill).attr("data-animate",imgURLAnimate).attr("data-state","still");
 
             image.addClass("gif");
-          
+            
             // Appending the image
             sportDiv.append(image);  
 
-            // Putting the entire sport above the previous sports
+            // Putting the entire sport above the previous sports.
             $("#gif-view").append(sportDiv);
-       
+        
         }
+
+    $(".gif").on("click", function() {
+
+    var state = $(this).attr("data-state");
+        
+    if (state == "still") {
+        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("data-state","animate")
+        
+    } else {
+        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("data-state","still")
+    }
+
     });
+});
 }
 
  // Function for displaying movie data
@@ -86,21 +101,5 @@ $("#add-sport").on("click", function (event) {
     renderButtons();
 });
 
-$(".gif").on("click", function() {
-    
-    var state = $(this).attr("data-state");
- 
-    
-    if (state == "still") {
-        $(this).attr("src", $(this).attr("data-animate"));
-        $(this).attr("data-state","animate")
-      
-      } else {
-        $(this).attr("src", $(this).attr("data-still"));
-        $(this).attr("data-state","still")
-    }
 
-console.log("hello");
-
-});
 
