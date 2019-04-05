@@ -9,6 +9,15 @@ var favorite;
 // Initial array of sports
 var sports = ["Wingsuit flying", "Field archery", "Gymnastics", "Hang gliding", "Pickleball", "Beach volleyball", "Quidditch", "Aid climbing", "Sumo", "Taekwondo"];
 
+function addToFavorites ($target) {
+             
+    return function() {
+        $target.appendTo(".card-body");
+        $target.addClass("favorite");
+    }
+ 
+}
+
 function displaySports() {
 
     var offset = Math.floor((Math.random() * 100) + 1);
@@ -16,6 +25,7 @@ function displaySports() {
     var queryUrl = "https://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=oiM2ClHg2Eep6z2Pbfi8uR4kkEsv5zeO&limit=10&offset=" + offset;
 
     // Creating an AJAX call for the specific sport button being clicked.
+    
     $.ajax({
         url: queryUrl,
         method: "GET"
@@ -23,9 +33,6 @@ function displaySports() {
 
         $("#gif-view").empty();
         $("#gif-view").show();
-
-
-
         // create a for to get the 10 elements from the data. 
         for (var i = 0; i < response.data.length; i++) {
 
@@ -60,18 +67,24 @@ function displaySports() {
             // Putting the entire sport above the previous sports.
             $("#gif-view").append(sportDiv);
 
-            console.log("Id: ");
-            console.log(sportDiv.attr('id'));
-
-            sportDiv.on("click", function (){
-                var favorite = sportDiv.detach();
-                console.log("Object id: ");
-                console.log(favorite.attr('id'));
-                favorite.appendTo(".card-body");
-                sportDiv.addClass("favorite");
-                //console.log(this);
-                console.log("Clicked on btn-fav");
+         
+            download.on("click", function (event) {
+                event.preventDefault();
+                //var element = $("<a>").attr("href", imgURLAnimate);
+                //$(this).append(element);
+                           
+                window.location.href = imgURLAnimate
+              
             });
+
+            favorite.on("click", addToFavorites(sportDiv));
+            
+            // sportDiv.on("click", function (){
+                             
+            //     $(this).appendTo(".card-body");
+            //     sportDiv.addClass("favorite");
+             
+            // });
         }
 
 
@@ -90,19 +103,9 @@ function displaySports() {
             }
         });
 
-        $(".btn").on("click", function (event) {
-            event.preventDefault();
-            var element = $("<a>").attr("href", imgURLAnimate);
-            $(this).append(element);
-            console.log("hello2");
-        });
+        
 
-        $(".btn-fav").on("click", function () {
-
-            
-
-        });
-
+  
     });
 
 }
@@ -127,6 +130,9 @@ function renderButtons() {
         // add data attribute. 
         createButton.attr("data-name", sports[i]);
         createButton.text(sports[i]);
+
+        console.log(createButton);
+        
         $("#buttons-view").append(createButton);
     }
 }
