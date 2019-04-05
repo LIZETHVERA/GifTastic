@@ -10,7 +10,7 @@ function displaySports() {
 
 var offset = Math.floor((Math.random() * 100) + 1);    
 var sport = $(this).attr("data-name");
-var queryUrl = "http://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=oiM2ClHg2Eep6z2Pbfi8uR4kkEsv5zeO&limit=10&offset=" + offset;
+var queryUrl = "https://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=oiM2ClHg2Eep6z2Pbfi8uR4kkEsv5zeO&limit=10&offset=" + offset;
 
 // Creating an AJAX call for the specific sport button being clicked.
     $.ajax ({
@@ -24,7 +24,7 @@ var queryUrl = "http://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=oiM2
         for (var i = 0; i < response.data.length; i++) {
 
             // Creating a div to hold the sport
-            var sportDiv = $("<div class='sport'>").text();
+            var sportDiv = $("<div class='sport'>");
             // Store the rating data
             var rating = response.data[i].rating;
             // Element to have the rating displayed
@@ -36,12 +36,16 @@ var queryUrl = "http://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=oiM2
             var imgURLStill = response.data[i].images.fixed_width_still.url;
             var imgURLAnimate = response.data[i].images.fixed_width_downsampled.url;
             
-            var image = $("<img>").attr("src", imgURL).attr("data-still",imgURLStill).attr("data-animate",imgURLAnimate).attr("data-state","still");
+            var image = $("<img>").attr("src", imgURL).attr("data-still",imgURLStill).attr("data-animate", imgURLAnimate).attr("data-state","still");
 
             image.addClass("gif");
             
-            // Appending the image
-            sportDiv.append(image);  
+            var download = $("<button>").addClass("btn").text("Download");
+            
+
+            var favorite = $("<button>").addClass("btn-fav").text("favorite");
+            // Appending the image and the button. 
+            sportDiv.append(image,download,favorite);  
 
             // Putting the entire sport above the previous sports.
             $("#gif-view").append(sportDiv);
@@ -62,6 +66,24 @@ var queryUrl = "http://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=oiM2
     }
 
     });
+    console.log(imgURLAnimate);
+
+    $(".btn").on("click", function(event) {
+        event.preventDefault();
+        var element = $("<a>").attr("href" , imgURLAnimate);
+        $(this).append(element);
+
+           
+    });
+
+    $(".btn-fav").on("click", function(event) {
+        event.preventDefault();
+      
+           
+    });
+
+
+
 });
 }
 
