@@ -1,30 +1,40 @@
-$(document).on("click", ".sport-btn",".gif", displaySports); {
+$(document).on("click", ".sport-btn", ".gif", displaySports); {
 
     $("#gif-view").hide();
 }
 
+var chooseGif = true;
+var favorite;
+
 // Initial array of sports
-var sports = ["Wingsuit flying", "Field archery", "Gymnastics", "Hang gliding","Pickleball","Beach volleyball","Quidditch","Aid climbing","Sumo","Taekwondo"];
+var sports = ["Wingsuit flying", "Field archery", "Gymnastics", "Hang gliding", "Pickleball", "Beach volleyball", "Quidditch", "Aid climbing", "Sumo", "Taekwondo"];
 
 function displaySports() {
 
-var offset = Math.floor((Math.random() * 100) + 1);    
-var sport = $(this).attr("data-name");
-var queryUrl = "https://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=oiM2ClHg2Eep6z2Pbfi8uR4kkEsv5zeO&limit=10&offset=" + offset;
+    var offset = Math.floor((Math.random() * 100) + 1);
+    var sport = $(this).attr("data-name");
+    var queryUrl = "https://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=oiM2ClHg2Eep6z2Pbfi8uR4kkEsv5zeO&limit=10&offset=" + offset;
 
-// Creating an AJAX call for the specific sport button being clicked.
-    $.ajax ({
+    // Creating an AJAX call for the specific sport button being clicked.
+    $.ajax({
         url: queryUrl,
         method: "GET"
-    }).then (function(response) {
+    }).then(function (response) {
 
         $("#gif-view").empty();
         $("#gif-view").show();
+
+
+
         // create a for to get the 10 elements from the data. 
         for (var i = 0; i < response.data.length; i++) {
 
             // Creating a div to hold the sport
             var sportDiv = $("<div class='sport'>");
+
+            sportDiv.data('title', response.data[i].title);
+
+            var sportDiv = $("<div class='gif-title'>").text(response.data[i].title);
             // Store the rating data
             var rating = response.data[i].rating;
             // Element to have the rating displayed
@@ -35,65 +45,77 @@ var queryUrl = "https://api.giphy.com/v1/gifs/search?q=" + sport + "&api_key=oiM
             var imgURL = response.data[i].images.fixed_width_still.url;
             var imgURLStill = response.data[i].images.fixed_width_still.url;
             var imgURLAnimate = response.data[i].images.fixed_width_downsampled.url;
-            
-            var image = $("<img>").attr("src", imgURL).attr("data-still",imgURLStill).attr("data-animate", imgURLAnimate).attr("data-state","still");
+
+            var image = $("<img>").attr("src", imgURL).attr("data-still", imgURLStill).attr("data-animate", imgURLAnimate).attr("data-state", "still");
 
             image.addClass("gif");
-            
+
             var download = $("<button>").addClass("btn").text("Download");
-            
+
 
             var favorite = $("<button>").addClass("btn-fav").text("favorite");
             // Appending the image and the button. 
-            sportDiv.append(image,download,favorite);  
+            sportDiv.append(image, download, favorite);
 
             // Putting the entire sport above the previous sports.
             $("#gif-view").append(sportDiv);
-        
+
+            console.log("Id: ");
+            console.log(sportDiv.attr('id'));
+
+            sportDiv.on("click", function (){
+                var favorite = sportDiv.detach();
+                console.log("Object id: ");
+                console.log(favorite.attr('id'));
+                favorite.appendTo(".card-body");
+                sportDiv.addClass("favorite");
+                //console.log(this);
+                console.log("Clicked on btn-fav");
+            });
         }
 
-    $(".gif").on("click", function() {
 
-    var state = $(this).attr("data-state");
-        
-    if (state == "still") {
-        $(this).attr("src", $(this).attr("data-animate"));
-        $(this).attr("data-state","animate")
-        
-    } else {
-        $(this).attr("src", $(this).attr("data-still"));
-        $(this).attr("data-state","still")
-    }
+
+        $(".gif").on("click", function () {
+
+            var state = $(this).attr("data-state");
+
+            if (state == "still") {
+                $(this).attr("src", $(this).attr("data-animate"));
+                $(this).attr("data-state", "animate")
+
+            } else {
+                $(this).attr("src", $(this).attr("data-still"));
+                $(this).attr("data-state", "still")
+            }
+        });
+
+        $(".btn").on("click", function (event) {
+            event.preventDefault();
+            var element = $("<a>").attr("href", imgURLAnimate);
+            $(this).append(element);
+            console.log("hello2");
+        });
+
+        $(".btn-fav").on("click", function () {
+
+            
+
+        });
 
     });
-    console.log(imgURLAnimate);
 
-    $(".btn").on("click", function(event) {
-        event.preventDefault();
-        var element = $("<a>").attr("href" , imgURLAnimate);
-        $(this).append(element);
-
-           
-    });
-
-    $(".btn-fav").on("click", function(event) {
-        event.preventDefault();
-      
-           
-    });
-
-
-
-});
 }
 
- // Function for displaying movie data
+
+
+// Function for displaying movie data
 
 function renderButtons() {
 
     // To dont repeat the buttons. 
     $("#buttons-view").empty();
- 
+
     // Iterations over sports array. 
     for (var i = 0; i < sports.length; i++) {
         // create a buttons for the array. 
