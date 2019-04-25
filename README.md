@@ -6,8 +6,8 @@ It creates buttons depends of the user input and show 10 random gifs everytime t
 
 The user can put any gif in favorites. 
 
-Code:
+# Code:
 This page was built using javaScript and JQuery - AJAX and JSON - APIS. 
 
-Challenge:
+# Challenge:
 The most challenge was to iterate over the object and show the gifs also that the user can put any gif in favorites. 
